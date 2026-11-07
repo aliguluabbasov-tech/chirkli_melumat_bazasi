@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="az">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>İnnovasiya və Rəqəmsal İnkişaf Agentliyi - Reyestr Auditoru</title>
+  <script src="https://cdn.tailwindcss.com/3.4.1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #f9f9f7;
+      --surface: #fcfcfb;
+      --ink: #0b0b0b;
+      --ink-2: #52514e;
+      --muted: #898781;
+      --hairline: rgba(11, 11, 11, 0.10);
+      --grid: #e1e0d9;
+      --s1: #2a78d6; /* Dublikatlar */
+      --s2: #eb6834; /* Məntiqi anomaliyalar */
+      --s3: #1baf7a; /* Boş məlumatlar */
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        color-scheme: dark;
+        --page: #0d0d0d;
+        --surface: #1a1a19;
+        --ink: #f0efec;
+        --ink-2: #c3c2b7;
+        --hairline: rgba(255, 255, 255, 0.10);
+        --grid: #2c2c2a;
+        --s1: #3987e5;
+        --s2: #d95926;
+        --s3: #199e70;
+      }
+    }
+    body { background: var(--page); color: var(--ink); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+    .card { background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px; }
+    .ink-2 { color: var(--ink-2); }
+    .muted { color: var(--muted); }
+    .dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; flex: none; }
+    .rule { border-color: var(--grid); }
+    table td, table th { border-color: var(--grid); }
+    .num { font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+<body class="min-h-screen">
+  <header class="border-b rule" style="background: var(--surface)">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-5 flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <p class="text-xs uppercase tracking-wider muted font-medium">Məlumat keyfiyyəti auditi</p>
+        <h1 class="text-xl sm:text-2xl font-semibold">İnnovasiya və Rəqəmsal İnkişaf Agentliyi - Reyestr Auditoru</h1>
+      </div>
+      <div class="text-sm ink-2 text-right">
+        <div>Audit tarixi: <span id="auditDate" class="font-medium">—</span></div>
+        <div>Yoxlanılan qeyd: <span id="totalRecords" class="font-medium num">—</span></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+    <div id="error" class="hidden card p-4 text-sm" style="border-color:#d03b3b"></div>
+
+    <!-- KPI kartları -->
+    <section class="grid grid-cols-1 sm:grid-cols-3 gap-4" id="kpis"></section>
+
+    <!-- Qrafik + izah -->
+    <section class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+      <div class="card p-5 lg:col-span-2">
+        <h2 class="font-semibold">Problemlərin bölgüsü</h2>
+        <p class="text-sm ink-2 mb-4">Aşkarlanmış problemlərin növlərə görə payı</p>
+        <div class="relative mx-auto" style="max-width: 300px; aspect-ratio: 1">
+          <canvas id="pie" aria-label="Problemlərin növlərə görə bölgüsü" role="img"></canvas>
+        </div>
+        <ul id="legend" class="mt-5 space-y-2 text-sm"></ul>
+      </div>
+
+      <div class="card p-5 lg:col-span-3 overflow-hidden">
+        <h2 class="font-semibold">Tapıntıların siyahısı</h2>
+        <p class="text-sm ink-2 mb-4">Hər problemli qeyd üzrə təfərrüat</p>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left muted text-xs uppercase tracking-wide">
+                <th class="py-2 pr-3 border-b font-medium">Növ</th>
+                <th class="py-2 pr-3 border-b font-medium">ID</th>
+                <th class="py-2 pr-3 border-b font-medium">Vətəndaş</th>
+                <th class="py-2 border-b font-medium">Təsvir</th>
+              </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const fullName = (r) => [r.ad, r.soyad].filter(Boolean).join(' ');
+
+    let chart;
+
+    function renderKpis(cats) {
+      document.getElementById('kpis').innerHTML = cats.map((c) => `
+        <div class="card p-5">
+          <div class="flex items-center gap-2 text-sm ink-2">
+            <span class="dot" style="background: var(${c.color})"></span>${c.label}
+          </div>
+          <div class="text-4xl font-semibold mt-3">${c.value}</div>
+          <div class="text-sm muted mt-1">${c.hint}</div>
+        </div>`).join('');
+    }
+
+    function renderLegend(cats, total) {
+      document.getElementById('legend').innerHTML = cats.map((c) => `
+        <li class="flex items-center gap-2">
+          <span class="dot" style="background: var(${c.color})"></span>
+          <span class="ink-2 flex-1">${c.label}</span>
+          <span class="font-medium num">${c.value}</span>
+          <span class="muted num w-12 text-right">${total ? Math.round((c.value / total) * 100) : 0}%</span>
+        </li>`).join('');
+    }
+
+    function renderChart(cats) {
+      const data = {
+        labels: cats.map((c) => c.label),
+        datasets: [{
+          data: cats.map((c) => c.value),
+          backgroundColor: cats.map((c) => css(c.color)),
+          borderColor: css('--surface'),
+          borderWidth: 2,
+          hoverOffset: 6,
+        }],
+      };
+      if (chart) chart.destroy();
+      chart = new Chart(document.getElementById('pie'), {
+        type: 'pie',
+        data,
+        options: {
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => {
+                  const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                  return ` ${ctx.label}: ${ctx.raw} (${total ? Math.round((ctx.raw / total) * 100) : 0}%)`;
+                },
+              },
+            },
+          },
+        },
+      });
+    }
+
+    function renderRows(report) {
+      const row = (color, type, id, name, desc) => `
+        <tr>
+          <td class="py-2.5 pr-3 border-b align-top whitespace-nowrap">
+            <span class="inline-flex items-center gap-2"><span class="dot" style="background: var(${color})"></span>${type}</span>
+          </td>
+          <td class="py-2.5 pr-3 border-b align-top num">${esc(id)}</td>
+          <td class="py-2.5 pr-3 border-b align-top">${esc(name)}</td>
+          <td class="py-2.5 border-b align-top ink-2">${desc}</td>
+        </tr>`;
+
+      const html = [];
+      for (const d of report.Dublikatlar || []) {
+        const diffs = Object.entries(d.ferqlenen_saheler || {})
+          .map(([k, v]) => `${esc(k)}: ${v.map(esc).join(' / ')}`).join('; ');
+        html.push(row('--s1', 'Dublikat', d.qeyd_idleri.join(', '),
+          d.qeydler.map(fullName).join(' ↔ '),
+          `FİN <b>${esc(d.fin_kod)}</b> — ${d.qeyd_sayi} qeyd. Fərq: ${diffs}`));
+      }
+      for (const a of report.Mentiqi_Anomaliyalar || []) {
+        html.push(row('--s2', 'Anomaliya', a.id, fullName(a), esc(a.tesvir)));
+      }
+      for (const b of report.Bos_Melumatlar || []) {
+        html.push(row('--s3', 'Boş məlumat', b.id, fullName(b), `<b>${esc(b.sahe)}</b> sahəsi boşdur`));
+      }
+      document.getElementById('rows').innerHTML = html.join('') ||
+        '<tr><td colspan="4" class="py-6 text-center muted">Problem aşkarlanmadı</td></tr>';
+    }
+
+    async function load() {
+      try {
+        const res = await fetch('/audit_report.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error(await res.text());
+        const report = await res.json();
+
+        document.getElementById('auditDate').textContent =
+          new Date(report.audit_tarixi).toLocaleString('az-AZ');
+        document.getElementById('totalRecords').textContent = report.yoxlanilan_qeyd_sayi;
+
+        const dupRecords = (report.Dublikatlar || []).reduce((n, d) => n + d.qeyd_sayi, 0);
+        const cats = [
+          { label: 'Dublikat qeydlər', color: '--s1', value: (report.Dublikatlar || []).length,
+            hint: `${dupRecords} qeyddə eyni FİN, fərqli yazılış` },
+          { label: 'Məntiqi anomaliyalar', color: '--s2', value: (report.Mentiqi_Anomaliyalar || []).length,
+            hint: 'Yaş / sürücülük, nikah / doğum ziddiyyəti' },
+          { label: 'Boş məlumatlar', color: '--s3', value: (report.Bos_Melumatlar || []).length,
+            hint: 'FİN kodu göstərilməyən vətəndaşlar' },
+        ];
+        const total = cats.reduce((n, c) => n + c.value, 0);
+
+        renderKpis(cats);
+        renderLegend(cats, total);
+        renderChart(cats);
+        renderRows(report);
+
+        // Sistem mövzusu dəyişəndə qrafik rənglərini yenilə
+        matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => renderChart(cats));
+      } catch (err) {
+        const box = document.getElementById('error');
+        box.classList.remove('hidden');
+        box.innerHTML = '<b>Hesabat yüklənmədi.</b> ' + esc(err.message || err);
+      }
+    }
+
+    load();
+  </script>
+</body>
+</html>

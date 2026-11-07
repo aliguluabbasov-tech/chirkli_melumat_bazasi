@@ -1,0 +1,112 @@
+[
+  {
+    "id": 1,
+    "ad": "Elvin",
+    "soyad": "Məmmədov",
+    "ata_adi": "Rauf",
+    "dogum_tarixi": "1988-04-15",
+    "fin_kod": "5HK2L9P",
+    "unvan": "Bakı şəh., Nizami küç. 45, mən. 12",
+    "suruculuk_vesiqesi": true,
+    "nikah_tarixi": "2014-06-21"
+  },
+  {
+    "id": 2,
+    "ad": "Elvin",
+    "soyad": "Mamedov",
+    "ata_adi": "Rauf",
+    "dogum_tarixi": "1988-04-15",
+    "fin_kod": "5HK2L9P",
+    "unvan": "Bakı şəh., Nizami küçəsi 45, mənzil 12",
+    "suruculuk_vesiqesi": true,
+    "nikah_tarixi": "2014-06-21"
+  },
+  {
+    "id": 3,
+    "ad": "Nərmin",
+    "soyad": "Əliyeva",
+    "ata_adi": "Tofiq",
+    "dogum_tarixi": "1995-09-02",
+    "fin_kod": "3TR8M1Q",
+    "unvan": "Gəncə şəh., Nizami küçəsi 12",
+    "suruculuk_vesiqesi": false,
+    "nikah_tarixi": null
+  },
+  {
+    "id": 4,
+    "ad": "Murad",
+    "soyad": "Hüseynov",
+    "ata_adi": "Elçin",
+    "dogum_tarixi": "2012-03-10",
+    "fin_kod": "7JD4X2B",
+    "unvan": "Sumqayıt şəh., 9-cu mkr., ev 14",
+    "suruculuk_vesiqesi": true,
+    "nikah_tarixi": null
+  },
+  {
+    "id": 5,
+    "ad": "Günay",
+    "soyad": "Quliyeva",
+    "ata_adi": "Vaqif",
+    "dogum_tarixi": "1990-11-25",
+    "fin_kod": "2PW6N8C",
+    "unvan": "Bakı şəh., Nizami küç. 101",
+    "suruculuk_vesiqesi": false,
+    "nikah_tarixi": "1989-07-14"
+  },
+  {
+    "id": 6,
+    "ad": "Rəşad",
+    "soyad": "İsmayılov",
+    "ata_adi": "Kamran",
+    "dogum_tarixi": "1979-01-30",
+    "fin_kod": null,
+    "unvan": "Şəki şəh., M.F.Axundov küç. 8",
+    "suruculuk_vesiqesi": true,
+    "nikah_tarixi": "2003-09-05"
+  },
+  {
+    "id": 7,
+    "ad": "Leyla",
+    "soyad": "Həsənova",
+    "ata_adi": "Fikrət",
+    "dogum_tarixi": "1985-06-18",
+    "fin_kod": null,
+    "unvan": "Bakı şəh., Nizami küçəsi 67, mən. 3",
+    "suruculuk_vesiqesi": false,
+    "nikah_tarixi": "2010-12-11"
+  },
+  {
+    "id": 8,
+    "ad": "Orxan",
+    "soyad": "Abbasov",
+    "ata_adi": "Səməd",
+    "dogum_tarixi": "1999-02-07",
+    "fin_kod": "6ZB9K3F",
+    "unvan": "Lənkəran şəh., Heydər Əliyev pr. 22",
+    "suruculuk_vesiqesi": true,
+    "nikah_tarixi": null
+  },
+  {
+    "id": 9,
+    "ad": "Aysel",
+    "soyad": "Kərimova",
+    "ata_adi": "Natiq",
+    "dogum_tarixi": "1993-08-29",
+    "fin_kod": "4MV1T7D",
+    "unvan": "Mingəçevir şəh., Nizami küç. 5",
+    "suruculuk_vesiqesi": true,
+    "nikah_tarixi": "2018-05-19"
+  },
+  {
+    "id": 10,
+    "ad": "Tural",
+    "soyad": "Nəsirov",
+    "ata_adi": "Arif",
+    "dogum_tarixi": "1982-12-03",
+    "fin_kod": "8QS5R2H",
+    "unvan": "Bakı şəh., Nizami küçəsi 150",
+    "suruculuk_vesiqesi": false,
+    "nikah_tarixi": "2008-10-25"
+  }
+]

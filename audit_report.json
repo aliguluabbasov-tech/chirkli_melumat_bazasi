@@ -1,0 +1,80 @@
+{
+  "audit_tarixi": "2026-11-07T21:16:09.237Z",
+  "yoxlanilan_qeyd_sayi": 10,
+  "xulase": {
+    "dublikat_qrup_sayi": 1,
+    "mentiqi_anomaliya_sayi": 2,
+    "bos_fin_sayi": 2
+  },
+  "Dublikatlar": [
+    {
+      "fin_kod": "5HK2L9P",
+      "qeyd_sayi": 2,
+      "qeyd_idleri": [
+        1,
+        2
+      ],
+      "ferqlenen_saheler": {
+        "soyad": [
+          "Məmmədov",
+          "Mamedov"
+        ]
+      },
+      "qeydler": [
+        {
+          "id": 1,
+          "ad": "Elvin",
+          "soyad": "Məmmədov",
+          "ata_adi": "Rauf"
+        },
+        {
+          "id": 2,
+          "ad": "Elvin",
+          "soyad": "Mamedov",
+          "ata_adi": "Rauf"
+        }
+      ]
+    }
+  ],
+  "Mentiqi_Anomaliyalar": [
+    {
+      "id": 4,
+      "ad": "Murad",
+      "soyad": "Hüseynov",
+      "ata_adi": "Elçin",
+      "qayda": "YETKINLIK_YASINA_CATMAYAN_SURUCU",
+      "tesvir": "Vətəndaşın yaşı 14-dir (< 18), lakin sürücülük vəsiqəsi var.",
+      "dogum_tarixi": "2012-03-10",
+      "yas": 14,
+      "suruculuk_vesiqesi": true
+    },
+    {
+      "id": 5,
+      "ad": "Günay",
+      "soyad": "Quliyeva",
+      "ata_adi": "Vaqif",
+      "qayda": "NIKAH_DOGUMDAN_EVVEL",
+      "tesvir": "Nikah tarixi doğum tarixindən əvvəldir.",
+      "dogum_tarixi": "1990-11-25",
+      "nikah_tarixi": "1989-07-14"
+    }
+  ],
+  "Bos_Melumatlar": [
+    {
+      "id": 6,
+      "ad": "Rəşad",
+      "soyad": "İsmayılov",
+      "ata_adi": "Kamran",
+      "sahe": "fin_kod",
+      "deyer": null
+    },
+    {
+      "id": 7,
+      "ad": "Leyla",
+      "soyad": "Həsənova",
+      "ata_adi": "Fikrət",
+      "sahe": "fin_kod",
+      "deyer": null
+    }
+  ]
+}
